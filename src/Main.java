@@ -1,4 +1,3 @@
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -14,12 +13,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import java.io.FileWriter;
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.util.Scanner;
 
-public class Main  extends Application {
+import blocksPackage.Block;
+import blocksPackage.BuildBlocks;
+
+public class Main extends Application {
     public void start (Stage primaryStage){
         //Image for cover of the screen
         Image coverPhoto= new Image("Images/CoverPhoto.png");
@@ -64,19 +66,33 @@ public class Main  extends Application {
                     s.append((char) x);
                 }
                 String allFileContent = s.toString();
-                StringBuilder systemBlock = new StringBuilder();
                 Scanner scanner = new Scanner(allFileContent);
+                
+                StringBuilder systemBlock = new StringBuilder();
+                FileWriter myWriter = new FileWriter("system_root.xml");
+                
                 while (scanner.hasNextLine()) {
                     String nextLine = scanner.nextLine();
                     if (nextLine.contains("<System>")) {
                         do {
-                            systemBlock.append(nextLine);
-                            systemBlock.append("\n");
+                            systemBlock.append(nextLine + "\n");
+                            myWriter.write(nextLine + "\n");
                             nextLine = scanner.nextLine();
                         } while (!nextLine.contains("</System>"));
+						break;
                     }
                 }
-                systemBlock.append("</System>");
+				systemBlock.append("</System>");
+				myWriter.write("</System>");
+                myWriter.close();
+                scanner.close();
+                inputStream.close();
+                
+                Block[] blocks = BuildBlocks.parse(new File("system_root.xml"));
+                for (int i = 0; i < blocks.length; i++) {
+                    blocks[i].print();
+                }
+
             }
             catch (Exception ex) {
                 ex.printStackTrace();
