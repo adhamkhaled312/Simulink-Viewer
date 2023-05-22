@@ -1,0 +1,84 @@
+#tool-bar {
+    -fx-background-color: rgb(245, 246, 247);
+    -fx-border-color: rgb(218, 219, 220);
+}
+
+#canvas {
+    -fx-background-color: rgb(255,255,255);
+}
+
+.menu-bar {
+    -fx-background-color: rgb(255, 255, 255);
+}
+.menu {
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-border-width: 1px 1px 0; 
+    -fx-border-color: rgb(255, 255, 255);
+}
+.menu:hover .label {
+    -fx-text-fill: black;
+}
+.menu:hover {
+    -fx-border-color: rgb(235, 235, 236);
+}
+#current-menu {
+    -fx-background-color: rgb(245, 246, 247);
+    -fx-border-width: 1px 1px 0; 
+    -fx-border-color: rgb(218, 219, 220);
+}
+
+#tool {
+    -fx-padding: 10px;
+    -fx-border-insets: 10px;
+    -fx-background-insets: 10px;
+    -fx-padding: 5px;
+    -fx-border-color: rgb(245, 246, 247);
+}
+#tool:hover {
+    -fx-background-color: rgb(232, 239, 247);
+    -fx-border-color: rgb(164, 206, 249);
+}
+#tool:hover .button, #tool:hover #button-label {
+    -fx-background-color: rgb(232, 239, 247);
+}
+.button {
+    -fx-background-color: rgb(245, 246, 247);
+}
+#button-label {
+    -fx-text-alignment: center;
+    -fx-font-size: 18px;
+    -fx-background-color: rgb(245, 246, 247);
+}
+
+/* #tool:hover .button {
+    -fx-border-color: rgb(164, 206, 249);
+}
+#tool:hover .label {
+    -fx-border-color: rgb(164, 206, 249);
+}
+
+.button {
+    -fx-padding: 10px 10px 0;
+    -fx-border-insets: 10px 10px 0;
+    -fx-background-insets: 10px 10px 0;
+    -fx-border-color: rgb(245, 246, 247);
+    -fx-border-radius: 5px 5px 0 0;
+    -fx-background-color: rgb(245, 246, 247);
+}
+
+#button-label {
+    -fx-text-alignment: center;
+    -fx-padding: 0 5px 5px;
+    -fx-font-size: 18px;
+    -fx-border-radius: 0 0 5px 5px;
+    -fx-border-width: 0 1px 1px;
+    -fx-border-color: rgb(245, 246, 247);
+    -fx-background-color: rgb(245, 246, 247);
+}
+
+.button:hover {
+    -fx-background-color: rgb(232, 239, 247);
+}
+#button-label:hover {
+    -fx-background-color: rgb(232, 239, 247);
+} */
