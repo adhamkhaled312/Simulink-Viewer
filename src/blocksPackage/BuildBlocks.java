@@ -31,12 +31,14 @@ public class BuildBlocks {
             HashMap<String, String> attributes = new HashMap<String, String>();
 
             for (int j = 0; j < attributeList.getLength(); j++) {
+                
                 Element attribute = (Element) attributeList.item(j);
                 String attributeName = attribute.getAttribute("Name");
+                
                 if (attributeName.equals("Position")) {
                     String[] positionString = (attribute.getTextContent().replaceAll("\\[", "").replaceAll("]", "").replaceAll(" ", "")).split(",");
                     for (int k = 0; k < 4; k++) {
-                        blockPosition[k] = Integer.parseInt(positionString[k]);
+                        blockPosition[k] = (int) Math.round(0.1*Integer.parseInt(positionString[k]));
                     }
                 } else if (attributeName.equals("ZOrder")) {
                     blockZOrder = Integer.parseInt(attribute.getTextContent());
@@ -48,5 +50,4 @@ public class BuildBlocks {
         }
         return blocks;
     }
-
 }
