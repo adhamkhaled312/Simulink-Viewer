@@ -4,28 +4,29 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.ImagePattern;
 
 public class ButtonAndLabel extends VBox{
-    private Button button = new Button();
+    private Rectangle picture;
     private Label label;
 
     public ButtonAndLabel() {}
     public ButtonAndLabel(String name, String path) {
         super();
-        button.setPrefSize(60, 60);
+        picture = new Rectangle(30, 30);
         label = new Label(name);
         label.setId("button-label");
-        ImageView photo= new ImageView(new Image("Images/" + name + "Symbol.png"));
-        photo.setFitHeight(30);
-        photo.setFitWidth(30);
-        button.setGraphic(photo);
-        button.setContentDisplay(ContentDisplay.TOP);
-        this.getChildren().addAll(button, label);
+        ImagePattern imagePattern = new ImagePattern(new Image("Images/" + name + "Symbol.png"));
+        picture.setFill(imagePattern);
+        this.setMinWidth(90);
+        this.setMinHeight(100);
+        this.getChildren().addAll(picture, label);
         this.setAlignment(Pos.CENTER);
     }
 
-    public Button getButton() {
-        return button;
+    public Rectangle getPicture() {
+        return picture;
     }
     public Label getLabel() {
         return label;

@@ -1,10 +1,14 @@
 package blocksPackage;
+
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import java.util.*;
+import javafx.geometry.Pos;
 
-import javafx.scene.canvas.GraphicsContext;
 
 public class Block {
     private String blockType;
@@ -13,6 +17,7 @@ public class Block {
     private int[] position = new int[4];
     private int zOrder;
     private HashMap<String, String> attributes;
+    private Rectangle rectangle;
 
     Block () {
     }
@@ -69,16 +74,35 @@ public class Block {
         System.out.println("attributes: " + attributes.toString() + "\n");
     }
 
-    public void draw(GraphicsContext gc, int step, int moveX, int moveY) {
-        Image photo= new Image("Images/Blocks/" + blockType + ".png");
-        gc.setStroke(Color.BLACK);
-        gc.strokeRect((position[0]+moveX)*step,
-                      (position[1]+moveY)*step,
-                      (position[2]-position[0])*step,
-                      (position[3]-position[1])*step);
-        gc.drawImage(photo, (position[0]+moveX)*step,
-                            (position[1]+moveY)*step,
-                            (position[2]-position[0])*step,
-                            (position[3]-position[1])*step);
+    public void draw(Pane pane, double step, double moveX, double moveY) {
+
+        //Create a rectangle
+        rectangle = new Rectangle((position[2]-position[0])*step, (position[3]-position[1])*step);
+
+        // Load the image for the block background
+        Image blockImage;
+        try {
+            blockImage = new Image("Images/Blocks/" + this.blockType + ".png");
+        } catch (Exception e) {
+            blockImage = new Image("Images/Blocks/Error.png");
+        }
+
+        ImagePattern imagePattern = new ImagePattern(blockImage);
+        rectangle.setFill(imagePattern);
+        
+        // Create a label for the block name
+        Label nameLabel = new Label(this.name);
+        nameLabel.setId("block-name");
+        nameLabel.setFont(new Font("Ariel", 10*step));
+        
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setLayoutX((position[0]+moveX)*step);
+        vbox.setLayoutY((position[1]+moveY)*step);
+
+        // Create a pane to hold the block image and label
+        vbox.getChildren().addAll(rectangle, nameLabel);
+        pane.getChildren().add(vbox);
+        
     }
 }

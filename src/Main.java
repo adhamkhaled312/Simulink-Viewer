@@ -4,17 +4,23 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.input.*;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.canvas.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.Node;
+import javafx.geometry.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
+import javafx.stage.*;
 import javafx.scene.layout.*;
+import javafx.embed.swing.*;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Scanner;
+import java.awt.image.RenderedImage;
+import javax.imageio.ImageIO;
 
 import javax.xml.parsers.*;
 import org.xml.sax.SAXException;
@@ -27,9 +33,8 @@ public class Main extends Application {
     
     Stage stage = new Stage();
     VBox vbox = new VBox();
-    StackPane pane = new StackPane();
+    Pane pane = new Pane();
     CustomToolBar toolBar;
-    int step = 5;
     int moveX = 0;
     int moveY = 0;
     int width = 590;
@@ -37,6 +42,11 @@ public class Main extends Application {
     int prevMouseX = 0;
     int prevMouseY = 0;
     Block[] blocks;
+    int[] nums = {10,15,23,34,51,76};
+    int index = 0;
+    double step = nums[index];
+    double pxPerStep = 10;
+
 
     public void start (Stage primaryStage)
     throws IOException, ParserConfigurationException, SAXException {
@@ -131,36 +141,42 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
-        primaryStage.show();
+        //primaryStage.show();
+        blocks = BuildBlocks.parse(new File("system_root.xml"));
+        primaryStage.hide();
+        draw();
     }
 
-    public void draw (){
+    public void draw () {
 
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        width = (int) bounds.getWidth() - 10;
+        height = (int) bounds.getHeight() - 150;
+        
         // create menu bar, tool bar and canvas
         CustomMenuBar menuBar = drawMenuBar();
         toolBar = drawFileBar();
+        pane.setId("canvas");
         drawCanvas();
         vbox.getChildren().addAll(menuBar, toolBar, pane);
+        pane.viewOrderProperty().set(10);;
         
-        Scene scene = new Scene(vbox, 600, 600);
+        pane.setPrefSize(width, height);
+        Scene scene = new Scene(vbox, bounds.getWidth(), bounds.getHeight());
         scene.getStylesheets().add("style/stylesheet.css");
         stage.setTitle("Simulink");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
         
         // events on key pressed
         scene.onKeyPressedProperty().setValue((e) -> {
             if (e.getCode() == KeyCode.S && e.isControlDown()) {
             } else if (e.getCode() == KeyCode.Z && e.isControlDown()) {
-                step += 1;
-                moveX -= Math.round(((0.5*width)/(step-1))/step);                
-                moveY -= Math.round(((0.5*height)/(step-1))/step);
-                drawCanvas();
+                zoomIn();
             } else if (e.getCode() == KeyCode.X && e.isControlDown() && step > 2) {
-                step -= 1;
-                moveX += Math.round(((0.5*width)/(step+1))/step);
-                moveY += Math.round(((0.5*height)/(step+1))/step);
-                drawCanvas();
+                zoomOut();
             } else if (e.getCode() == KeyCode.I) {
                 moveY -= 1;
                 drawCanvas();
@@ -174,7 +190,6 @@ public class Main extends Application {
                 moveX += 1;
                 drawCanvas();
             }
-
         });
         
         //events on resize of window
@@ -189,49 +204,77 @@ public class Main extends Application {
         
         //events on drag
         pane.onMousePressedProperty().setValue((e) -> {
-            prevMouseX = (int)e.getX();
-            prevMouseY = (int)e.getY();
+            if (e.getButton() == MouseButton.MIDDLE) {
+                prevMouseX = (int)e.getX();
+                prevMouseY = (int)e.getY();
+            }
         });
         pane.onMouseDraggedProperty().setValue((e) -> {
-            int disX = (int)Math.round(((e.getX()-prevMouseX))/step);
-            int disY = (int)Math.round(((e.getY()-prevMouseY))/step);
-            moveX += disX;
-            moveY += disY;
-            drawCanvas();
-            moveX -= disX;
-            moveY -= disY;
+            if (e.getButton() == MouseButton.MIDDLE) {
+                int disX = (int)Math.round(((e.getX()-prevMouseX))/step);
+                int disY = (int)Math.round(((e.getY()-prevMouseY))/step);
+                moveX += disX;
+                moveY += disY;
+                drawCanvas();
+                moveX -= disX;
+                moveY -= disY;
+            }
         });
         pane.onMouseReleasedProperty().setValue((e) -> {
-            moveX += Math.round(((e.getX()-prevMouseX))/step);
-            moveY += Math.round(((e.getY()-prevMouseY))/step);
-            drawCanvas();
+            if (e.getButton() == MouseButton.MIDDLE) {
+                moveX += Math.round(((e.getX()-prevMouseX))/step);
+                moveY += Math.round(((e.getY()-prevMouseY))/step);
+                drawCanvas();
+            }
         });
-        
-        //events on click of tool bar buttons
-        toolBar.getButtonAndLabel(2).getButton().onMouseClickedProperty().setValue((e) -> {
-            stage.hide();
-        });;
+
+        pane.setOnScroll((ScrollEvent event) -> {
+            if (event.getDeltaY() > 0) {
+                zoomIn();
+            } else if (step > 2) {
+                zoomOut();
+                
+            }
+        });
     }
 
     public void drawCanvas() {
-        Canvas canvas = new Canvas(width, height);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        pane.getChildren().clear();
-        pane.getChildren().add(canvas);
-        pane.setId("canvas");
-
         //draw all blocks
+        pane.getChildren().clear();
         for (int i = 0; i < blocks.length; i++) {
-            blocks[i].draw(gc, step, moveX, moveY);
+            blocks[i].draw(pane, step/pxPerStep, moveX*pxPerStep, moveY*pxPerStep);
         }
+    }
 
-        //draw dots in background
-        gc.setFill(Color.BLACK);
-        for (int j = 0; j < height; j += 2*step) {
-            for (int i = 0; i < width; i += 2*step) {
-                gc.fillRect(i,j,1,1);
-            }
+    public void zoomIn() {
+        index++;
+        double prevStep = nums[(index+5)%6];
+        if (index > 5) {
+            index = 0;
+            pxPerStep /= 10;
+            moveX *= 10;
+            moveY *= 10;
+            prevStep /= 10;
         }
+        step = nums[index];
+        moveX += Math.round(((0.5*width*(prevStep-step))/(prevStep))/step);                
+        moveY += Math.round(((0.5*height*(prevStep-step))/(prevStep))/step);
+        drawCanvas();
+    }
+    public void zoomOut() {
+        index--;
+        double prevStep = nums[(index+1)%6];
+        if (index < 0) {
+            index = 5;
+            pxPerStep *= 10;
+            moveX = Math.round(moveX/10);
+            moveY = Math.round(moveY/10);
+            prevStep *= 10;
+        }
+        step = nums[index];
+        moveX += Math.round(((0.5*width*(prevStep-step))/(prevStep))/step);
+        moveY += Math.round(((0.5*height*(prevStep-step))/(prevStep))/step);
+        drawCanvas();
     }
 
     public CustomMenuBar drawMenuBar() {
@@ -255,15 +298,36 @@ public class Main extends Application {
         });
         return menuBar;
     }
-
     public CustomToolBar drawFileBar () {
         String[] names = {"Open", "Save", "Close"};
         CustomToolBar fileBar = new CustomToolBar(names);
+        fileBar.getButtonAndLabel(1).setOnMouseClicked((e) -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+            File file = fileChooser.showSaveDialog(null);
+            if(file != null){
+                try {
+                    WritableImage writableImage = new WritableImage(width + 20, height + 20);
+                    pane.snapshot(null, writableImage);
+                    RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                    ImageIO.write(renderedImage, "png", file);
+                } catch (IOException ex) { }
+            }
+        });
+        fileBar.getButtonAndLabel(2).setOnMouseClicked((e) -> {
+            stage.hide();
+        });
         return fileBar;
     }
     public CustomToolBar drawOptionBar () {
         String[] names = {"Zoom In", "Zoom Out"};
         CustomToolBar optionBar = new CustomToolBar(names);
+        optionBar.getButtonAndLabel(0).setOnMouseClicked((e) -> {
+            zoomIn();
+        });
+        optionBar.getButtonAndLabel(1).setOnMouseClicked((e) -> {
+            zoomOut();
+        });
         return optionBar;
     }
     public CustomToolBar drawHelpBar () {

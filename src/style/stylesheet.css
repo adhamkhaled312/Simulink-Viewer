@@ -50,6 +50,10 @@
     -fx-background-color: rgb(245, 246, 247);
 }
 
+#block-name {
+    -fx-text-fill: rgb(23,138,238);
+}
+
 /* #tool:hover .button {
     -fx-border-color: rgb(164, 206, 249);
 }
