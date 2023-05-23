@@ -141,10 +141,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
-        //primaryStage.show();
-        blocks = BuildBlocks.parse(new File("system_root.xml"));
-        primaryStage.hide();
-        draw();
+        primaryStage.show();
     }
 
     public void draw () {
