@@ -28,6 +28,9 @@ public class BuildBlocks {
             int blockID = Integer.parseInt(block.getAttribute("SID"));
             int[] blockPosition = new int[4];
             int blockZOrder = 0;
+            int[] blockPorts = new int[2];
+            blockPorts[0] = 1;
+            blockPorts[1] = 1;
             HashMap<String, String> attributes = new HashMap<String, String>();
 
             for (int j = 0; j < attributeList.getLength(); j++) {
@@ -42,11 +45,16 @@ public class BuildBlocks {
                     }
                 } else if (attributeName.equals("ZOrder")) {
                     blockZOrder = Integer.parseInt(attribute.getTextContent());
+                } else if (attributeName.equals("Ports")) {
+                    String[] portsString = (attribute.getTextContent().replaceAll("\\[", "").replaceAll("]", "").replaceAll(" ", "")).split(",");                    
+                    for (int k = 0; k < portsString.length; k++) {
+                        blockPorts[k] = Integer.parseInt(portsString[k]);
+                    }
                 } else {
                     attributes.put(attributeName, attribute.getTextContent());
                 }
             }
-            blocks[i] = new Block(blockType, blockName, blockID, blockPosition, blockZOrder, attributes);
+            blocks[i] = new Block(blockType, blockName, blockID, blockPosition, blockZOrder, blockPorts, attributes);
         }
         return blocks;
     }

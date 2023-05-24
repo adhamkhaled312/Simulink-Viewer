@@ -5,10 +5,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.input.*;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.canvas.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
-import javafx.scene.Node;
 import javafx.geometry.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,12 +19,13 @@ import java.io.FileInputStream;
 import java.util.Scanner;
 import java.awt.image.RenderedImage;
 import javax.imageio.ImageIO;
-
+import javafx.scene.Cursor;
 import javax.xml.parsers.*;
 import org.xml.sax.SAXException;
 import java.io.*;
 
 import blocksPackage.*;
+import linesPackage.*;
 import userInterfacePackage.*;
 
 public class Main extends Application {
@@ -42,6 +41,8 @@ public class Main extends Application {
     int prevMouseX = 0;
     int prevMouseY = 0;
     Block[] blocks;
+    Line[] lines;
+    boolean drag = false;
     int[] nums = {10,15,23,34,51,76};
     int index = 0;
     double step = nums[index];
@@ -116,6 +117,10 @@ public class Main extends Application {
                 inputStream.close();
                 
                 blocks = BuildBlocks.parse(new File("system_root.xml"));
+                lines = BuildLines.parse(new File("system_root.xml"));
+                for (int i = 0; i < lines.length; i++) {
+                    lines[i].print();
+                }
                 for (int i = 0; i < blocks.length; i++) {
                     blocks[i].print();
                 }
@@ -162,7 +167,7 @@ public class Main extends Application {
         pane.setPrefSize(width, height);
         Scene scene = new Scene(vbox, bounds.getWidth(), bounds.getHeight());
         scene.getStylesheets().add("style/stylesheet.css");
-        stage.setTitle("Simulink");
+        stage.setTitle("Simulink Viewer");
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
@@ -201,13 +206,13 @@ public class Main extends Application {
         
         //events on drag
         pane.onMousePressedProperty().setValue((e) -> {
-            if (e.getButton() == MouseButton.MIDDLE) {
+            if (e.getButton() == MouseButton.MIDDLE || drag) {
                 prevMouseX = (int)e.getX();
                 prevMouseY = (int)e.getY();
             }
         });
         pane.onMouseDraggedProperty().setValue((e) -> {
-            if (e.getButton() == MouseButton.MIDDLE) {
+            if (e.getButton() == MouseButton.MIDDLE || drag) {
                 int disX = (int)Math.round(((e.getX()-prevMouseX))/step);
                 int disY = (int)Math.round(((e.getY()-prevMouseY))/step);
                 moveX += disX;
@@ -218,7 +223,7 @@ public class Main extends Application {
             }
         });
         pane.onMouseReleasedProperty().setValue((e) -> {
-            if (e.getButton() == MouseButton.MIDDLE) {
+            if (e.getButton() == MouseButton.MIDDLE || drag) {
                 moveX += Math.round(((e.getX()-prevMouseX))/step);
                 moveY += Math.round(((e.getY()-prevMouseY))/step);
                 drawCanvas();
@@ -234,7 +239,6 @@ public class Main extends Application {
             }
         });
     }
-
     public void drawCanvas() {
         //draw all blocks
         pane.getChildren().clear();
@@ -317,7 +321,7 @@ public class Main extends Application {
         return fileBar;
     }
     public CustomToolBar drawOptionBar () {
-        String[] names = {"Zoom In", "Zoom Out"};
+        String[] names = {"Zoom In", "Zoom Out", "Drag"};
         CustomToolBar optionBar = new CustomToolBar(names);
         optionBar.getButtonAndLabel(0).setOnMouseClicked((e) -> {
             zoomIn();
@@ -325,6 +329,18 @@ public class Main extends Application {
         optionBar.getButtonAndLabel(1).setOnMouseClicked((e) -> {
             zoomOut();
         });
+        optionBar.getButtonAndLabel(2).setOnMouseClicked((e) -> {
+            if (drag) {
+                pane.setCursor(Cursor.DEFAULT);
+                drag = false;
+                optionBar.getButtonAndLabel(2).setId("tool");
+            } else {
+                pane.setCursor(Cursor.MOVE);
+                drag = true;
+                optionBar.getButtonAndLabel(2).setId("selected");
+            }
+        });
+        // scene.setCursor(Cursor.HAND);
         return optionBar;
     }
     public CustomToolBar drawHelpBar () {

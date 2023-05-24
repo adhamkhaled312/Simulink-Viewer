@@ -16,18 +16,17 @@ public class Block {
     private int id;
     private int[] position = new int[4];
     private int zOrder;
+    private int[] ports = new int[2];
     private HashMap<String, String> attributes;
     private Rectangle rectangle;
 
-    Block () {
-    }
-
-    Block (String blockType, String name, int id, int[] position, int zOrder, HashMap<String, String> attributes) {
+    Block (String blockType, String name, int id, int[] position, int zOrder, int[] ports, HashMap<String, String> attributes) {
         this.blockType = blockType;
         this.name = name;
         this.id = id;
         this.position = position;
         this.zOrder = zOrder;
+        this.ports = ports;
         this.attributes = attributes;
     }
 
@@ -45,6 +44,9 @@ public class Block {
     }
     public int getZOrder() {
         return zOrder;
+    }
+    public int[] getPorts() {
+        return ports;
     }
     public HashMap<String, String> getAttributes() {
         return attributes;
@@ -65,12 +67,27 @@ public class Block {
     public void setZOrder(int zOrder) {
         this.zOrder = zOrder;
     }
+    public void setPorts(int[] ports) {
+        this.ports = ports;
+    }
     public void setAttributes(HashMap<String, String> attributes) {
         this.attributes = attributes;
     }
 
+    public int[] getPortPosition(int port, String inOut) {
+        int[] coordintates = new int[2];
+        if (inOut.equals("in")) {
+            coordintates[0] = position[0];
+            coordintates[1] = position[1] + port*(position[3]-position[1])/(ports[0]+1);
+        } else if (inOut.equals("out")) {
+            coordintates[0] = position[2];
+            coordintates[1] = position[1] + port*(position[3]-position[1])/(ports[1]+1);
+        }
+        return coordintates;
+    }
+
     public void print() {
-        System.out.println("block type = " + blockType + ", name = " + name + ", ID = " + id + ", position = [" + position[0] + ", " + position[1] + ", " + position[2] + ", " + position[3] + "], zOrder = " + zOrder);
+        System.out.println("block type = " + blockType + ", name = " + name + ", ID = " + id + ", position = [" + position[0] + ", " + position[1] + ", " + position[2] + ", " + position[3] + "], zOrder = " + zOrder + ", in ports = " + ports[0] + ", out ports = " + ports[1]);
         System.out.println("attributes: " + attributes.toString() + "\n");
     }
 
