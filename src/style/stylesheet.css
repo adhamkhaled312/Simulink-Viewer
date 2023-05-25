@@ -46,9 +46,6 @@
     -fx-background-color: rgb(232, 239, 247);
 }
 
-/* .button {
-    -fx-background-color: rgb(245, 246, 247);
-} */
 #button-label {
     -fx-text-alignment: center;
     -fx-font-size: 18px;

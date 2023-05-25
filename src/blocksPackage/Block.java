@@ -9,6 +9,7 @@ import javafx.scene.text.Font;
 import java.util.*;
 import javafx.geometry.Pos;
 
+import userInterfacePackage.*;
 
 public class Block {
     private String blockType;
@@ -91,7 +92,7 @@ public class Block {
         System.out.println("attributes: " + attributes.toString() + "\n");
     }
 
-    public void draw(Pane pane, double step, double moveX, double moveY) {
+    public void draw(CustomCanvas pane, double step, double moveX, double moveY) {
 
         //Create a rectangle
         rectangle = new Rectangle((position[2]-position[0])*step, (position[3]-position[1])*step);

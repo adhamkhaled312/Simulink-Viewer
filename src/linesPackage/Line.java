@@ -1,6 +1,5 @@
 package linesPackage;
 
-import java.io.*;
 import blocksPackage.*;
 
 public class Line {
@@ -89,10 +88,8 @@ public class Line {
 
     private static Block[] blocks;
 
-    public static void getBlocks() {
-        try {
-            blocks = BuildBlocks.parse(new File("system_root.xml"));
-        } catch (Exception e) {}
+    public static void setBlocks(Block[] myBlocks) {
+        blocks = myBlocks;
     }
 
     public static Block getBlockById (int id) {

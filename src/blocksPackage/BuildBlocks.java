@@ -2,18 +2,21 @@ package blocksPackage;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
-import org.xml.sax.SAXException;
 import java.io.*;
 import java.util.*;
 
 public class BuildBlocks {
 
-    public static Block[] parse (File xmlFile)
-    throws IOException, ParserConfigurationException, SAXException {
+    public static Block[] parse (File xmlFile) {
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(xmlFile);
+        Document document;
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(xmlFile);
+        } catch (Exception e) {
+            return null;
+        }
 
         NodeList blockList = document.getElementsByTagName("Block");
         Block[] blocks = new Block[blockList.getLength()];

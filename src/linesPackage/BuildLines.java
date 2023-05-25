@@ -2,19 +2,21 @@ package linesPackage;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
-import org.xml.sax.SAXException;
 import java.io.*;
 import java.util.ArrayList;
 
 public class BuildLines {
 
-    public static Line[] parse(File xmlFile)
-    throws IOException, ParserConfigurationException, SAXException {
+    public static Line[] parse(File xmlFile) {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(xmlFile);
-
+        Document document;
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(xmlFile);
+        } catch (Exception e) {
+            return null;
+        }
         NodeList lines = document.getElementsByTagName("Line");
         Line[] lineArray = new Line[lines.getLength()];
 
