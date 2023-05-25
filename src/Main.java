@@ -141,6 +141,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image("images/Icon.png"));
         primaryStage.show();
     }
 
@@ -157,7 +158,7 @@ public class Main extends Application {
         pane.setId("canvas");
         drawCanvas();
         vbox.getChildren().addAll(menuBar, toolBar, pane);
-        pane.viewOrderProperty().set(10);;
+        //pane.viewOrderProperty().set(10);;
         
         pane.setPrefSize(width, height);
         Scene scene = new Scene(vbox, bounds.getWidth(), bounds.getHeight());
