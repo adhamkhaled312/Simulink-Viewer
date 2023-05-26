@@ -27,7 +27,7 @@
     -fx-border-color: rgb(218, 219, 220);
 }
 
-#tool {
+#tool, #selected {
     -fx-padding: 10px;
     -fx-border-insets: 10px;
     -fx-background-insets: 10px;
@@ -38,12 +38,14 @@
     -fx-background-color: rgb(232, 239, 247);
     -fx-border-color: rgb(164, 206, 249);
 }
-#tool:hover .button, #tool:hover #button-label {
+#selected {
+    -fx-background-color: rgb(232, 239, 247);
+    -fx-border-color: rgb(164, 206, 249);
+}
+#tool:hover #button-label, #selected #button-label {
     -fx-background-color: rgb(232, 239, 247);
 }
-.button {
-    -fx-background-color: rgb(245, 246, 247);
-}
+
 #button-label {
     -fx-text-alignment: center;
     -fx-font-size: 18px;
