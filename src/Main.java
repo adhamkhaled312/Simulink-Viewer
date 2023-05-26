@@ -107,6 +107,7 @@ public class Main extends Application {
         Scene scene = new Scene(vbox, 600, 600);
         scene.getStylesheets().add("style/stylesheet.css");
         stage.setTitle("Simulink Viewer");
+        stage.getIcons().add(new Image("Images/Icon.png"));
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
