@@ -84,7 +84,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
-        primaryStage.getIcons().add(new Image("Images/Icon.png"));
         primaryStage.show();
     }
 
@@ -274,19 +273,17 @@ public class Main extends Application {
             
             while (scanner.hasNextLine()) {
                 String nextLine = scanner.nextLine();
-                if (nextLine.contains("<System>")) {
+                if (nextLine.contains("MWOPC_PART_BEGIN") && nextLine.contains("systems/system_root.xml")) {
                     do {
-                        myWriter.write(nextLine + "\n");
                         nextLine = scanner.nextLine();
+                        myWriter.write(nextLine + "\n");
                     } while (!nextLine.contains("</System>"));
                     break;
                 }
             }
-            myWriter.write("</System>");
             myWriter.close();
             scanner.close();
             inputStream.close();
-            
             
             pane = new CustomCanvas(new File(fileName + ".xml"));
             panes.add(pane);
@@ -299,7 +296,7 @@ public class Main extends Application {
             }
             tapsBar.addMenu(fileName);
 
-            //pane.viewOrderProperty().set(10);;
+            pane.viewOrderProperty().set(10);
             pane.setId("canvas");
             pane.setWidthAndHeight(width, height);
             

@@ -60,6 +60,19 @@ public class BuildBlocks {
                     attributes.put(attributeName, attribute.getTextContent());
                 }
             }
+
+            NodeList portsCount = block.getElementsByTagName("PortCounts");
+            if (portsCount.getLength() > 0) {
+                Element portsElement = (Element) portsCount.item(0);
+                String port = portsElement.getAttribute("in");
+                if (!port.equals("")) {
+                    blockPorts[0] = Integer.parseInt(port);
+                }
+                port = portsElement.getAttribute("out");
+                if (!port.equals("")) {
+                    blockPorts[1] = Integer.parseInt(port);
+                }
+            }
             blocks[i] = new Block(blockType, blockName, blockID, blockPosition, blockZOrder, blockPorts, blockMirror, attributes);
         }
         return blocks;

@@ -131,20 +131,20 @@ public class Arrow {
             Block dstBlock = getBlockById(this.dst[0]);
             Polygon triangle = new Polygon();
             endCoordinates = dstBlock.getPortPosition(this.dst[1], "in");
-            endCoordinates[0] = (endCoordinates[0] + moveX ) * step;
             endCoordinates[1] = (endCoordinates[1] + moveY ) * step;
-                
             if (dstBlock.getMirror()) {
+                endCoordinates[0] = (endCoordinates[0] + 4 + moveX ) * step;
                 triangle.getPoints().setAll(new Double[]{
-                    endCoordinates[0]+4*step, endCoordinates[1]-4*step,
-                    endCoordinates[0], endCoordinates[1],
-                    endCoordinates[0]+4*step, endCoordinates[1]+4*step
+                    endCoordinates[0], endCoordinates[1]-4*step,
+                    endCoordinates[0]-4*step, endCoordinates[1],
+                    endCoordinates[0], endCoordinates[1]+4*step
                 });
             } else {
+                endCoordinates[0] = (endCoordinates[0] - 4 + moveX ) * step;
                 triangle.getPoints().setAll(new Double[]{
-                    endCoordinates[0]-4*step, endCoordinates[1]-4*step,
-                    endCoordinates[0], endCoordinates[1],
-                    endCoordinates[0]-4*step, endCoordinates[1]+4*step
+                    endCoordinates[0], endCoordinates[1]-4*step,
+                    endCoordinates[0]+4*step, endCoordinates[1],
+                    endCoordinates[0], endCoordinates[1]+4*step
                 });
             }
 
