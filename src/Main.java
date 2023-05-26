@@ -84,6 +84,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image("images/Icon.png"));
         primaryStage.show();
     }
 
