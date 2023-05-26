@@ -32,6 +32,7 @@ public class BuildBlocks {
             int[] blockPosition = new int[4];
             int blockZOrder = 0;
             int[] blockPorts = new int[2];
+            Boolean blockMirror = false;
             blockPorts[0] = 1;
             blockPorts[1] = 1;
             HashMap<String, String> attributes = new HashMap<String, String>();
@@ -53,11 +54,13 @@ public class BuildBlocks {
                     for (int k = 0; k < portsString.length; k++) {
                         blockPorts[k] = Integer.parseInt(portsString[k]);
                     }
+                } else if (attributeName.equals("BlockMirror") && attribute.getTextContent().equals("on")) {
+                    blockMirror = true;
                 } else {
                     attributes.put(attributeName, attribute.getTextContent());
                 }
             }
-            blocks[i] = new Block(blockType, blockName, blockID, blockPosition, blockZOrder, blockPorts, attributes);
+            blocks[i] = new Block(blockType, blockName, blockID, blockPosition, blockZOrder, blockPorts, blockMirror, attributes);
         }
         return blocks;
     }

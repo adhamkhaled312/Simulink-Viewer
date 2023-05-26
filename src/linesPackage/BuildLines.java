@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class BuildLines {
 
-    public static Line[] parse(File xmlFile) {
+    public static Arrow[] parse(File xmlFile) {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document document;
@@ -18,7 +18,7 @@ public class BuildLines {
             return null;
         }
         NodeList lines = document.getElementsByTagName("Line");
-        Line[] lineArray = new Line[lines.getLength()];
+        Arrow[] lineArray = new Arrow[lines.getLength()];
 
         for (int i = 0; i < lines.getLength(); i++) {
             Element line = (Element) lines.item(i);  
@@ -27,7 +27,7 @@ public class BuildLines {
         return lineArray;
     }
 
-    public static Line createLine(Element line, int level) {
+    public static Arrow createLine(Element line, int level) {
         int numOfBranches = 0;
         NodeList childNodes = line.getChildNodes();
         
@@ -79,13 +79,13 @@ public class BuildLines {
         }
 
         if (numOfBranches == 0) {
-            return new Line(lineZOrder, lineSrc, lineDst, linePoints, level);
+            return new Arrow(lineZOrder, lineSrc, lineDst, linePoints, level);
         } else {
-            Line[] branches = new Line[numOfBranches];
+            Arrow[] branches = new Arrow[numOfBranches];
             for (int i = 0; i < numOfBranches; i++) {
                 branches[i] = createLine(branchElements.get(i), level+1);
             }
-            return new Line(lineZOrder, lineSrc, lineDst, linePoints, level, branches);
+            return new Arrow(lineZOrder, lineSrc, lineDst, linePoints, level, branches);
         }
     }
 

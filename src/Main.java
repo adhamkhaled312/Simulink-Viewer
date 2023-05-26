@@ -17,24 +17,27 @@ import java.awt.image.RenderedImage;
 import javax.imageio.ImageIO;
 import javafx.scene.Cursor;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 import userInterfacePackage.*;
+import linesPackage.*;
 
 public class Main extends Application {
     
-    Stage stage = new Stage();
-    VBox vbox = new VBox();
-    CustomCanvas pane = new CustomCanvas();
-    ArrayList<CustomCanvas> panes = new ArrayList<CustomCanvas>();
-    CustomMenuBar menuBar = new CustomMenuBar();
-    CustomMenuBar tapsBar = new CustomMenuBar();
-    CustomToolBar toolBar;
-    int currentPane = 0;
-    int width = 0;
-    int height = 0;
-    boolean drag = false;
+    static Stage stage = new Stage();
+    static VBox vbox = new VBox();
+    static CustomCanvas pane = new CustomCanvas();
+    static ArrayList<CustomCanvas> panes = new ArrayList<CustomCanvas>();
+    static HashMap<String, Integer> titles = new HashMap<String, Integer>();
+    static CustomMenuBar menuBar = new CustomMenuBar();
+    static CustomMenuBar tapsBar = new CustomMenuBar();
+    static CustomToolBar toolBar;
+    static int currentPane = 0;
+    static int width = 0;
+    static int height = 0;
+    static boolean drag = false;
 
+    @Override
     public void start (Stage primaryStage) {
         //Image for cover of the screen
         Image coverPhoto= new Image("Images/CoverPhoto.png");
@@ -154,6 +157,11 @@ public class Main extends Application {
         });
         menuBar.getMenu(1).idProperty().addListener((obs, oldVal, newVal) -> {
             drawOptionBar();
+            if (drag) {
+                toolBar.getButtonAndLabel(2).setId("selected");
+            } else {
+                toolBar.getButtonAndLabel(2).setId("tool");
+            }
             vbox.getChildren().remove(1);
             vbox.getChildren().add(1, toolBar);
         });
@@ -170,6 +178,7 @@ public class Main extends Application {
                 try {
                     currentPane = ii;
                     pane = panes.get(currentPane);
+                    Arrow.setBlocks(pane.getBlocks());
                     vbox.getChildren().remove(3);
                     vbox.getChildren().add(3, pane);
                     pane.draw();
@@ -225,12 +234,15 @@ public class Main extends Application {
         });
         toolBar.getButtonAndLabel(2).setOnMouseClicked((e) -> {
             if (drag) {
-                pane.setCursor(Cursor.DEFAULT);
+                for (int i = 0; i < panes.size(); i++) {
+                    panes.get(i).setCursor(Cursor.DEFAULT);
+                }
                 drag = false;
                 toolBar.getButtonAndLabel(2).setId("tool");
             } else {
-                pane.setCursor(Cursor.MOVE);
-                drag = true;
+                for (int i = 0; i < panes.size(); i++) {
+                    panes.get(i).setCursor(Cursor.MOVE);
+                }drag = true;
                 toolBar.getButtonAndLabel(2).setId("selected");
             }
         });
@@ -274,9 +286,16 @@ public class Main extends Application {
             scanner.close();
             inputStream.close();
             
+            
             pane = new CustomCanvas(new File(fileName + ".xml"));
             panes.add(pane);
             currentPane = panes.size()-1;
+            if (titles.containsKey(fileName)) {
+                titles.put(fileName, titles.get(fileName) +1);
+                fileName += " (" + titles.get(fileName) + ")";
+            } else {
+                titles.put(fileName, 1);
+            }
             tapsBar.addMenu(fileName);
 
             pane.viewOrderProperty().set(10);;
@@ -312,7 +331,7 @@ public class Main extends Application {
         catch (Exception ex) {
         }
     }
-    public static void main(String[] args) {
+    public static void main (String[] args) {
         launch(args);
     }
 }

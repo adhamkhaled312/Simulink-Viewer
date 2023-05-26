@@ -14,7 +14,7 @@ import linesPackage.*;
 
 public class CustomCanvas extends Pane {
     private Block[] blocks;
-    private Line[] lines;
+    private Arrow[] lines;
     private int moveX = 0;
     private int moveY = 0;
     private int width = 0;
@@ -32,9 +32,13 @@ public class CustomCanvas extends Pane {
     public CustomCanvas (File file) {
         blocks = BuildBlocks.parse(file);
         lines = BuildLines.parse(file);
-        Line.setBlocks(blocks);
+        Arrow.setBlocks(blocks);
     }
 
+
+    public Block[] getBlocks() {
+        return blocks;
+    }
     public void setMoveX (int move) {
         moveX += move;
     }
@@ -62,6 +66,9 @@ public class CustomCanvas extends Pane {
         this.getChildren().clear();
         for (int i = 0; i < this.blocks.length; i++) {
             this.blocks[i].draw(this, step/pxPerStep, moveX*pxPerStep, moveY*pxPerStep);
+        }
+        for (int i = 0; i < this.lines.length; i++) {
+            this.lines[i].draw(this, step/pxPerStep, moveX*pxPerStep, moveY*pxPerStep);
         }
     }
     public void zoomIn() {
