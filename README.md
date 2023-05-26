@@ -10,5 +10,6 @@ The tool allows to load Simulink MDL files and view their contents in a hierarch
 | Ali Mahmoud Abdulhalim Mohamed | 2000469 |
 | Ahmed Mohamed Abd El Rehem | 1808471 |
 ## Notes to Run the Program
-* You can just download the Run folder and run the program using SimulinkViewer batch file.
-* You can download the java files and run it.
+* You can just download the Run folder and run the program using SimulinkViewer.bat batch file.
+* You can download the java files and run the program using Run.bat batch file.
+* You can download the java files and run the program using any IDE or using cmd.
