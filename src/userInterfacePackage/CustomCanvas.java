@@ -56,7 +56,7 @@ public class CustomCanvas extends Pane {
         Rectangle rectangle = new Rectangle(width-10, height-45);
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.rgb(245, 246, 247));
-        rectangle.setStrokeWidth(20);
+        rectangle.setStrokeWidth(15);
         rectangle.setStrokeType(StrokeType.OUTSIDE);
         rectangle.setLayoutX(9);
         rectangle.setLayoutY(9);
