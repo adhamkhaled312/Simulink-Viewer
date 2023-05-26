@@ -84,7 +84,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulink Viewer");
         primaryStage.setResizable(false);
-        primaryStage.getIcons().add(new Image("images/Icon.png"));
+        primaryStage.getIcons().add(new Image("Images/Icon.png"));
         primaryStage.show();
     }
 
@@ -299,7 +299,7 @@ public class Main extends Application {
             }
             tapsBar.addMenu(fileName);
 
-            pane.viewOrderProperty().set(10);;
+            //pane.viewOrderProperty().set(10);;
             pane.setId("canvas");
             pane.setWidthAndHeight(width, height);
             
